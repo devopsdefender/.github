@@ -36,18 +36,8 @@ GitHub Actions ──OIDC──▶ Control Plane ◀──Attestation──▶ I
 
 | Repo | Description |
 |------|-------------|
-| [agent](https://github.com/devopsdefender/agent) | Rust daemon that runs on TDX VMs — handles attestation, container management, and heartbeats |
-| [control-plane](https://github.com/devopsdefender/control-plane) | Rust Axum API server — orchestrates agents, deployments, and attestation verification |
-| [images](https://github.com/devopsdefender/images) | Packer definitions for building agent VM images (GCP and baremetal) |
+| [dd](https://github.com/devopsdefender/dd) | Monorepo — agent, control plane, VM images, infra, and website |
 | [private-llm](https://github.com/devopsdefender/private-llm) | Example app: self-hosted LLM chat (Ollama + web UI) deployed to the platform |
-| [website](https://github.com/devopsdefender/website) | Landing page at [devopsdefender.com](https://devopsdefender.com) |
-
-## Key Concepts
-
-- **Intel TDX** — Trusted Domain Extensions. VMs run in encrypted memory with hardware-generated attestation quotes
-- **MRTD** — Measurement of the TDX domain, a hash of the initial VM state. Whitelisted in the control plane before deployment
-- **GitHub OIDC** — GitHub Actions issues short-lived JWTs at deploy time, verified by the control plane. No secrets to rotate or leak
-- **Cloudflare Tunnels** — Agents establish outbound tunnels, eliminating inbound port exposure entirely
 
 ## Quick Start
 
@@ -65,4 +55,3 @@ cd private-llm && docker compose up
 ## Links
 
 - [Website](https://devopsdefender.com)
-- [Documentation](https://github.com/devopsdefender/.github)
