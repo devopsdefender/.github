@@ -37,12 +37,10 @@ Auth (OIDC, ...) ──────▶ Control Plane ◀──Attestation──�
 
 ## Repositories
 
-| Repo | Status | Description |
-|------|--------|-------------|
-| [dd](https://github.com/devopsdefender/dd) | Active | Monorepo — agent, control plane, VM images, infra, and website |
-| [marketplace](https://github.com/devopsdefender/marketplace) | Active | Compute marketplace — buy TDX enclave capacity with BTC, manage local GPU nodes |
-| [openclaw](https://github.com/devopsdefender/openclaw) | Archived | OpenClaw AI agent deployed to TDX enclaves — self-hosted, private, hardware-verified |
-| [private-llm](https://github.com/devopsdefender/private-llm) | Archived | Example app: self-hosted LLM chat (Ollama + web UI) |
+| Repo | Description |
+|------|-------------|
+| [dd](https://github.com/devopsdefender/dd) | Monorepo — agent, control plane, VM images, infra, and website |
+| [marketplace](https://github.com/devopsdefender/marketplace) | Compute marketplace — buy TDX enclave capacity with BTC, manage local GPU nodes |
 
 ## Quick Start
 
