@@ -42,16 +42,6 @@ Auth (OIDC, ...) ──────▶ Control Plane ◀──Attestation──�
 | [dd](https://github.com/devopsdefender/dd) | Monorepo — agent, control plane, VM images, infra, and website |
 | [marketplace](https://github.com/devopsdefender/marketplace) | Compute marketplace — buy TDX enclave capacity with BTC, manage local GPU nodes |
 
-## Quick Start
-
-```bash
-# Run the control plane locally
-DD_CP_DATABASE_URL=sqlite://dev.db DD_CP_ADMIN_PASSWORD=changeme cargo run --bin dd-cp
-
-# Run an agent (skip attestation for non-TDX environments)
-DD_AGENT_SKIP_ATTESTATION=true DD_CP_URL=http://localhost:8080 cargo run --bin dd-agent
-```
-
 ## Links
 
 - [Website](https://devopsdefender.com)
