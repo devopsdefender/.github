@@ -1,22 +1,22 @@
 # DevOps Defender
 
-**Confidential compute marketplace — buy TDX enclave capacity with BTC, deploy any Docker app to hardware-verified VMs.**
+**Confidential compute marketplace — buy enclave capacity with BTC, deploy any Docker app to hardware-verified VMs.**
 
-DevOps Defender combines Intel TDX confidential computing with a decentralized compute marketplace. Node operators supply GPU and CPU capacity; buyers pay with BTC and get workloads running inside hardware-attested enclaves — no trust required.
+DevOps Defender combines confidential computing (Intel TDX today, AMD SEV planned) with a decentralized compute marketplace. Node operators supply GPU and CPU capacity; buyers pay with BTC and get workloads running inside hardware-attested enclaves — no trust required.
 
 ## How It Works
 
 | Layer | Technology | What It Does |
 |-------|-----------|--------------|
-| **Trust Root** | Intel TDX | Hardware attestation proves each VM's identity via cryptographic quotes from the CPU |
-| **Authentication** | GitHub OIDC | Short-lived JWT tokens from GitHub Actions — no stored API keys or credentials |
-| **Networking** | Cloudflare Tunnels | Outbound-only tunnels per agent — no open ports, no TLS certs, no firewall rules |
+| **Trust Root** | Intel TDX (AMD SEV planned) | Hardware attestation proves each VM's identity via cryptographic quotes from the CPU |
+| **Authentication** | GitHub OIDC (more providers planned) | Short-lived JWT tokens — no stored API keys or credentials |
+| **Networking** | Cloudflare Tunnels (Tailscale planned) | Outbound-only tunnels per agent — no open ports, no TLS certs, no firewall rules |
 | **Payments** | BTC | Buyers purchase enclave capacity with Bitcoin; node operators earn by supplying compute |
 
 ## Architecture
 
 ```
-GitHub Actions ──OIDC──▶ Control Plane ◀──Attestation──▶ Intel Trust Authority
+Auth (OIDC, ...) ──────▶ Control Plane ◀──Attestation──▶ Intel TDX / AMD SEV
                               │
                     ┌─────────┼─────────┐
                     ▼         ▼         ▼
@@ -29,8 +29,8 @@ GitHub Actions ──OIDC──▶ Control Plane ◀──Attestation──▶ I
                   (BTC payments, node mgmt)
 ```
 
-1. **Register** — Agent boots on a TDX-enabled VM, generates a hardware attestation quote, and registers with the control plane
-2. **Verify** — Control plane validates the quote through Intel Trust Authority, checking measurements (MRTD) and runtime state (RTMRs)
+1. **Register** — Agent boots on a confidential VM, generates a hardware attestation quote, and registers with the control plane
+2. **Verify** — Control plane validates the quote through the hardware vendor's trust authority, checking measurements and runtime state
 3. **Connect** — Agent receives a Cloudflare Tunnel token and establishes an outbound-only secure tunnel
 4. **Trade** — Marketplace matches buyers with verified node capacity; payments settle in BTC
 5. **Deploy** — Buyer submits a Docker Compose workload to the control plane, which assigns it to a verified agent
