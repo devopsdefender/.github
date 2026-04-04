@@ -1,47 +1,46 @@
 # DevOps Defender
 
-**Confidential compute marketplace — buy enclave capacity with BTC, deploy any Docker app to hardware-verified VMs.**
+**Run AI workloads on hardware-encrypted VMs. Agents ready in seconds.**
 
-DevOps Defender combines confidential computing (Intel TDX today, AMD SEV planned) with a decentralized compute marketplace. Node operators supply GPU and CPU capacity; buyers pay with BTC and get workloads running inside hardware-attested enclaves — no trust required.
+DevOps Defender is an open-source confidential computing platform built on Intel TDX. Each agent runs in a hardware-encrypted VM with a web dashboard, terminal access, and automatic Cloudflare Tunnel networking — no open ports, no stored secrets.
 
 ## How It Works
 
 | Layer | Technology | What It Does |
 |-------|-----------|--------------|
-| **Trust Root** | Intel TDX (AMD SEV planned) | Hardware attestation proves each VM's identity via cryptographic quotes from the CPU |
-| **Authentication** | GitHub OIDC (more providers planned) | Short-lived JWT tokens — no stored API keys or credentials |
-| **Networking** | Cloudflare Tunnels (Tailscale planned) | Outbound-only tunnels per agent — no open ports, no TLS certs, no firewall rules |
-| **Payments** | BTC | Buyers purchase enclave capacity with Bitcoin; node operators earn by supplying compute |
+| **Trust Root** | Intel TDX | Hardware attestation proves each VM's identity via cryptographic quotes from the CPU |
+| **Auth** | GitHub OAuth / Password | Dashboard login — GitHub OAuth for the fleet, shared password for individual agents |
+| **Networking** | Cloudflare Tunnels | Outbound-only tunnels per agent — no open ports, no TLS certs, no firewall rules |
+| **Workloads** | Plain processes / Podman | Run shell commands or containers directly on the VM — no container runtime overhead |
 
 ## Architecture
 
 ```
-Auth (OIDC, ...) ──────▶ Control Plane ◀──Attestation──▶ Intel TDX / AMD SEV
-                              │
-                    ┌─────────┼─────────┐
-                    ▼         ▼         ▼
-                 Agent 1   Agent 2   Agent N
-                 (TDX VM)  (TDX VM)  (TDX VM)
-                    │         │         │
-                 Cloudflare Tunnels (outbound-only)
-                              │
-                        Marketplace
-                  (BTC payments, node mgmt)
+Browser ──────▶ Fleet Dashboard (register agent)
+                      │
+            ┌─────────┼─────────┐
+            ▼         ▼         ▼
+         Agent 1   Agent 2   Agent N
+         (TDX VM)  (TDX VM)  (TDX VM)
+            │         │         │
+         Cloudflare Tunnels (outbound-only)
+            │         │         │
+         Workloads: OpenClaw, bash, podman containers
 ```
 
-1. **Register** — Agent boots on a confidential VM, generates a hardware attestation quote, and registers with the control plane
-2. **Verify** — Control plane validates the quote through the hardware vendor's trust authority, checking measurements and runtime state
-3. **Connect** — Agent receives a Cloudflare Tunnel token and establishes an outbound-only secure tunnel
-4. **Trade** — Marketplace matches buyers with verified node capacity; payments settle in BTC
-5. **Deploy** — Buyer submits a Docker Compose workload to the control plane, which assigns it to a verified agent
+1. **Boot** — Agent starts on a TDX VM, registers with the fleet via Noise-encrypted WebSocket
+2. **Attest** — Hardware generates a TDX quote proving the VM's identity and integrity
+3. **Connect** — Agent gets a Cloudflare Tunnel hostname (e.g. `agent-xyz.devopsdefender.com`)
+4. **Run** — Workloads run as plain processes or podman containers with a web dashboard and terminal
 
 ## Repositories
 
 | Repo | Description |
 |------|-------------|
-| [dd](https://github.com/devopsdefender/dd) | Monorepo — agent, control plane, VM images, infra, and website |
-| [marketplace](https://github.com/devopsdefender/marketplace) | Compute marketplace — buy TDX enclave capacity with BTC, manage local GPU nodes |
+| [dd](https://github.com/devopsdefender/dd) | dd-agent — Rust binary that runs on TDX VMs, manages workloads, serves dashboard |
+| [marketplace](https://github.com/devopsdefender/marketplace) | OpenClaw deployment — AI orchestrator with ollama fallback and optional H100 inference |
 
 ## Links
 
 - [Website](https://devopsdefender.com)
+- [Staging Dashboard](https://app-staging.devopsdefender.com)
